@@ -1,6 +1,6 @@
 PLACE-REACT-SOURCE-CODE-HERE
 /node_modules
-
+.vscode
 # Logs
 logs
 *.log
