@@ -2,6 +2,17 @@ function App() {
     const [count, setCount] = React.useState(0)
     // const [num, setNum] = React.useState(100)
     // const [test, setTest] = useTest('aa');
+
+    const [state, dispatch] = React.useReducer(reducer, {num: 0}); 
+
+    React.useEffect(() => {
+        console.log('useEffect');
+        
+        return () => {
+            console.log('cleanup',count);
+            
+        }
+    }, [])
     return (
         <div>
             <h1>
@@ -11,10 +22,26 @@ function App() {
                     setCount(v => v + 1)
                     }}> + </button>
             </h1>
+            <h1>
+                {state.num}
+                <button onClick={() => dispatch({type: 'increment'})}>+</button>
+                <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+            </h1>
             <ComponentFunction />
             <ComponentClass />
             
         </div>)
+}
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'increment': 
+            return {num: state.num };
+        case 'decrement': 
+            return {num: state.num - 1};
+        default: 
+            throw new Error();  
+    }
 }
 
 function ComponentFunction() {
@@ -24,8 +51,15 @@ function ComponentFunction() {
 }
 class ComponentClass extends React.Component {
     
+    constructor(props) {
+        super(props);
+        this.state = {
+            num2:0,
+        }
+    }
+
     componentDidMount(){
-        console.log("DidMount..");
+        console.log("componentDidMount..");
     }
 
     componentDidUpdate(){
@@ -33,7 +67,11 @@ class ComponentClass extends React.Component {
     }
 
     render(){
-        return <div><h1>ComponentClass</h1></div>
+        return (<div>
+            <h1>ComponentClass</h1>
+            <h2>{this.state.num2}</h2>
+            <button onClick={() => this.setState({})}>add</button>
+            </div>)
     }
 }
 
