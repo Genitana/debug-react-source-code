@@ -1,9 +1,22 @@
 function App() {
+    console.log('APP() ');
+    
     const [count, setCount] = React.useState(0)
     // const [num, setNum] = React.useState(100)
     // const [test, setTest] = useTest('aa');
 
     const [state, dispatch] = React.useReducer(reducer, {num: 0}); 
+
+    // useMemo不给依赖参数每次都会执行，给[]则执行且只会执行一次
+    const memoValue = React.useMemo(() => {
+        console.log('usememo*****');
+        return 111;         
+    }, []);
+
+    const refEle = React.useRef({test:111});
+    
+    console.log('refEle === window.refEle', refEle === window.refEle);
+    
 
     React.useEffect(() => {
         console.log('useEffect');
@@ -36,7 +49,8 @@ function App() {
 function reducer(state, action) {
     switch (action.type) {
         case 'increment': 
-            return {num: state.num };
+            // return {num: state.num };
+            return state;
         case 'decrement': 
             return {num: state.num - 1};
         default: 
@@ -47,7 +61,19 @@ function reducer(state, action) {
 function ComponentFunction() {
     console.log('come in ComponentFunction...');
     
-    return <div><h2>ComponentFunction</h2></div>
+    const [num, setnum] = React.useState(100);
+    const [num2, setnum2] = React.useState(100);
+
+    return (
+        <div>
+            <h1>ComponentFunction</h1>
+            {num}
+            <button onClick={() => setnum(100)}>function add（值不变）,不触发任何更新</button>
+            <div>
+                {num2}
+                <button onClick={() => setnum2(old => old + 1)}>function add（子组件更新，不会引起父组件更新）</button>
+            </div>
+        </div>)
 }
 class ComponentClass extends React.Component {
     
@@ -69,8 +95,8 @@ class ComponentClass extends React.Component {
     render(){
         return (<div>
             <h1>ComponentClass</h1>
-            <h2>{this.state.num2}</h2>
-            <button onClick={() => this.setState({})}>add</button>
+            {this.state.num2}
+            <button onClick={() => this.setState({})}>Class add（class调用了setState就会引起更新，子组件更新，不会引起父组件更新）</button>
             </div>)
     }
 }
